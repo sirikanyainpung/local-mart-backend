@@ -1,18 +1,21 @@
 import { Controller, Post, Body, Get, Query } from "@nestjs/common";
 import { BrandService } from "../service/brand.service";
 import { CreateBrandDto } from "../model/create-brand.dto";
+import { ResponseHelper } from "../../common/helper/response.helper";
 
 @Controller("brands")
 export class BrandController {
     constructor(private readonly brandService: BrandService) {}
 
     @Post()
-    create(@Body() body: CreateBrandDto) {
-        return this.brandService.create(body);
+    async create(@Body() body: CreateBrandDto) {
+        const result = await this.brandService.create(body);
+        return ResponseHelper.success(result, "Create brand success");
     }
 
     @Get()
-    findAll(@Query() query: any) {
-        return this.brandService.findAll(query);
+    async findAll(@Query() query: any) {
+        const result = await this.brandService.findAll(query);
+        return ResponseHelper.success(result, "Get brand success");
     }
 }
