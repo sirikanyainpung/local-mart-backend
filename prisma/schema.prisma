@@ -29,3 +29,60 @@ model BrandModel {
 
   @@map("brand_model")
 }
+
+model ProductMaster {
+  product_id        Int              @id @default(autoincrement())
+  sku_code          String
+  product_name      String
+  product_description String?
+  category_id       Int
+  brand_id          Int
+  brand_model_id    Int
+  status            String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  barcodes ProductBarcode[]
+  images   ProductImage[]
+
+  @@map("product_masters")
+}
+
+model ProductBarcode {
+  barcode_id Int @id @default(autoincrement())
+  barcode    String
+  product_id Int
+  unit_id    Int
+  qty        Int
+  vat        String
+  cost_price Float
+  sale_price Float
+
+  status String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  product ProductMaster @relation(fields: [product_id], references: [product_id])
+
+  @@map("product_barcode")
+}
+
+model ProductImage {
+  image_id   Int    @id @default(autoincrement())
+  product_id Int
+  sku_code   String
+  image_type String
+  image_index   Int
+  image_path String
+
+  status String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  product ProductMaster @relation(fields: [product_id], references: [product_id])
+
+  @@map("product_images")
+}
