@@ -86,3 +86,14 @@ model ProductImage {
 
   @@map("product_images")
 }
+
+model UnitMaster {
+  unit_id    Int     @id @default(autoincrement())
+  unit_code  String
+  unit_name  String
+  unit_qty   Int
+  category_id Int
+  status     String?
+
+  @@map("unit_master")
+}
