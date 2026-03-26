@@ -74,6 +74,8 @@ async function bootstrap(): Promise<void> {
     // 🔥 ใส่ global error handler ตรงนี้
     app.useGlobalFilters(new HttpExceptionFilter());
 
+    app.enableCors();
+
     // start server
     await app.listen(process.env.API_PORT || API_DEFAULT_PORT);
 }
