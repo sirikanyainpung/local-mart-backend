@@ -10,7 +10,6 @@ import { ApplicationModule } from "./modules/app.module";
 import { CommonModule, LogInterceptor } from "./modules/common";
 
 import { HttpExceptionFilter } from "./modules/common/filter/http-exception.filter";
-
 /**
  * These are API defaults that can be changed using environment variables,
  * it is not required to change them (see the `.env.example` file)
@@ -24,9 +23,9 @@ const API_DEFAULT_PREFIX = "/api/v1/";
  *
  * @todo Change the constants below following your API requirements
  */
-const SWAGGER_TITLE = "Passenger API";
-const SWAGGER_DESCRIPTION = "API used for passenger management";
-const SWAGGER_PREFIX = "/docs";
+const SWAGGER_TITLE = "Local Mart Backend API";
+const SWAGGER_DESCRIPTION = "API used for Local Mart Backend";
+const SWAGGER_PREFIX = "/local-mart-node-docs";
 
 /**
  * Register a Swagger module in the NestJS application.
