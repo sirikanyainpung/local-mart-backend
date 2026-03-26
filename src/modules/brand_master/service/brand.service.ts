@@ -6,12 +6,68 @@ import { CreateBrandDto } from "../model/create-brand.dto";
 export class BrandService {
     constructor(private prisma: PrismaService) {}
 
-    async create(data: CreateBrandDto) {
+    // async create(data: CreateBrandDto) {
+    //     return this.prisma.brandMaster.create({
+    //         data: {
+    //             brand_code: data.brand_code,
+    //             brand_name: data.brand_name,
+    //             status: data.status || "active",
+    //             brand_models: data.brand_models
+    //                 ? {
+    //                       create: data.brand_models.map((m) => ({
+    //                           brand_model_code: m.brand_model_code,
+    //                           brand_model_name: m.brand_model_name,
+    //                           status: m.status || "active",
+    //                       })),
+    //                   }
+    //                 : undefined,
+    //         },
+    //         include: {
+    //             brand_models: true,
+    //         },
+    //     });
+    // }
+
+    async create(data: CreateBrandDto | CreateBrandDto[]) {
+        // 🔥 ถ้าเป็น array → bulk
+        if (Array.isArray(data)) {
+            const result = [];
+
+            for (const item of data) {
+                const created = await this.prisma.brandMaster.create({
+                    data: {
+                        brand_code: item.brand_code,
+                        brand_name: item.brand_name,
+                        status: item.status || "active",
+
+                        brand_models: item.brand_models
+                            ? {
+                                  create: item.brand_models.map((m) => ({
+                                      brand_model_code: m.brand_model_code,
+                                      brand_model_name: m.brand_model_name,
+                                      status: m.status || "active",
+                                  })),
+                              }
+                            : undefined,
+                    },
+                    include: {
+                        brand_models: true,
+                    },
+                });
+
+                result.push(created);
+            }
+
+            return result;
+        }
+
+        // 🔥 single create (ของเดิม)
         return this.prisma.brandMaster.create({
             data: {
                 brand_code: data.brand_code,
                 brand_name: data.brand_name,
                 status: data.status || "active",
+
                 brand_models: data.brand_models
                     ? {
                           create: data.brand_models.map((m) => ({
@@ -27,6 +83,7 @@ export class BrandService {
             },
         });
     }
+
     async findAll(query: any) {
         const page = parseInt(query.page) || 1;
         const limit = parseInt(query.limit) || 10;

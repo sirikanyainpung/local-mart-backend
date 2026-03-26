@@ -10,8 +10,9 @@ export class BrandController {
     constructor(private readonly brandService: BrandService) {}
 
     @Post()
-    async create(@Body() body: CreateBrandDto) {
+    async create(@Body() body: CreateBrandDto | CreateBrandDto[]) {
         const result = await this.brandService.create(body);
+
         return ResponseHelper.success(result, "Create brand success");
     }
 
