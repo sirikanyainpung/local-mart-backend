@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from "@nestjs/common";
+import { Controller, Post, Body, Get, Query } from "@nestjs/common";
 import { ProductService } from "../service/product.service";
 import { CreateProductDto } from "../model/create-product.dto";
 import { ResponseHelper } from "../../common/helper/response.helper";
@@ -14,5 +14,12 @@ export class ProductController {
         const result = await this.productService.create(body);
 
         return ResponseHelper.success(result, "Create product success");
+    }
+
+    @Get()
+    async findAll(@Query() query: any) {
+        const result = await this.productService.findAll(query);
+
+        return ResponseHelper.success(result, "Get product success");
     }
 }

@@ -47,4 +47,70 @@ export class ProductService {
             },
         });
     }
+
+    async findAll(query: any) {
+        const page = parseInt(query.page) || 1;
+        const limit = parseInt(query.limit) || 10;
+        const search = query.search || "";
+
+        const skip = (page - 1) * limit;
+
+        // 🔥 dynamic filter
+        const where: any = {
+            ...(search && {
+                OR: [
+                    {
+                        product_name: {
+                            contains: search,
+                            mode: "insensitive" as const,
+                        },
+                    },
+                    {
+                        sku_code: {
+                            contains: search,
+                            mode: "insensitive" as const,
+                        },
+                    },
+                ],
+            }),
+
+            ...(query.brand_id && {
+                brand_id: parseInt(query.brand_id),
+            }),
+
+            ...(query.category_id && {
+                category_id: parseInt(query.category_id),
+            }),
+
+            ...(query.status && {
+                status: query.status,
+            }),
+        };
+
+        const [data, total] = await Promise.all([
+            this.prisma.productMaster.findMany({
+                where,
+                include: {
+                    barcodes: true,
+                    images: true,
+                },
+                skip,
+                take: limit,
+                orderBy: {
+                    product_id: "desc",
+                },
+            }),
+            this.prisma.productMaster.count({ where }),
+        ]);
+
+        return {
+            list: data,
+            meta: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit),
+            },
+        };
+    }
 }
